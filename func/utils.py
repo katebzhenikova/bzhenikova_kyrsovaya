@@ -50,18 +50,12 @@ class Cardoperations:
             for k, v in i.items():
                 if k == 'from':
                     parts = v.split()
-                    if parts[0] == 'Maestro':
-                        masked = parts[1][:4] + ' ' + parts[1][4:6] + '** **** ' + parts[1][-4:]
-                        i[k] = parts[0] + ' ' + masked
-                    if parts[0] == 'МИР':
+                    if parts[0] == 'Maestro' or 'МИР' or 'MasterCard':
                         masked = parts[1][:4] + ' ' + parts[1][4:6] + '** **** ' + parts[1][-4:]
                         i[k] = parts[0] + ' ' + masked
                     if parts[0] == 'Visa':
                         masked = parts[2][:4] + ' ' + parts[2][4:6] + '** **** ' + parts[2][-4:]
                         i[k] = parts[0] + ' ' + parts[1] + ' ' + masked
-                    if parts[0] == 'MasterCard':
-                        masked = parts[1][:4] + ' ' + parts[1][4:6] + '** **** ' + parts[1][-4:]
-                        i[k] = parts[0] + ' ' + masked
                     if parts[0] == 'Счет':
                         masked = ' **' + parts[1][-4:]
                         i[k] = parts[0] + masked
@@ -70,28 +64,19 @@ class Cardoperations:
         return self.operation
 
     def count_format(self):
-        """
-        Номер счета замаскирован и не отображается целиком в формате **XXXX
-        """
         for i in self.operation:
             for k, v in i.items():
                 if k == 'to':
-                    parts = v.split(' ')
-                    if parts[0] == 'Счет':
-                        masked = ' **' + parts[1][-4:]
-                        i[k] = parts[0] + masked
+                    parts = v.split()
+                    if parts[0] == 'Maestro' or 'МИР' or 'MasterCard':
+                        masked = parts[1][:4] + ' ' + parts[1][4:6] + '** **** ' + parts[1][-4:]
+                        i[k] = parts[0] + ' ' + masked
                     if parts[0] == 'Visa':
                         masked = parts[2][:4] + ' ' + parts[2][4:6] + '** **** ' + parts[2][-4:]
                         i[k] = parts[0] + ' ' + parts[1] + ' ' + masked
-                    if parts[0] == 'МИР':
-                        masked = parts[1][:4] + ' ' + parts[1][4:6] + '** **** ' + parts[1][-4:]
-                        i[k] = parts[0] + ' ' + masked
-                    if parts[0] == 'Maestro':
-                        masked = parts[1][:4] + ' ' + parts[1][4:6] + '** **** ' + parts[1][-4:]
-                        i[k] = parts[0] + ' ' + parts[1] + ' ' + masked
-                    if parts[0] == 'MasterCard':
-                        masked = parts[1][:4] + ' ' + parts[1][4:6] + '** **** ' + parts[1][-4:]
-                        i[k] = parts[0] + ' ' + parts[1] + ' ' + masked
+                    if parts[0] == 'Счет':
+                        masked = ' **' + parts[1][-4:]
+                        i[k] = parts[0] + masked
                 else:
                     None
         return self.operation
