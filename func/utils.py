@@ -2,27 +2,25 @@ import json
 from datetime import datetime
 
 
-def load_file():
+def load_file(filename):
     """
     Загружает инфу из файла json
     """
-    with open('operations.json', encoding='utf-8') as file:
+    with open(filename, encoding='utf-8') as file:
         return json.load(file)
 
 
-info_file = load_file()
-
-new_file = []
-
-for i in info_file:
+def executed_sorted_file(file):
     """
-    добавляет в список new_file только операции со статусом 'EXECUTED'
+    Добавляет в список new_file только операции со статусом 'EXECUTED' и сортирует по убыванию даты
     """
-    for k, v in i.items():
-        if v == 'EXECUTED':
-            new_file.append(i)
-
-sorted_data = sorted(new_file, key=lambda x: x['date'], reverse=True)  # сортировка списка по дате
+    new_file = []
+    for i in file:
+        for k, v in i.items():
+            if v == 'EXECUTED':
+                new_file.append(i)
+    sorted_data = sorted(new_file, key=lambda x: x['date'], reverse=True)  # сортировка списка по дате
+    return sorted_data
 
 
 class Cardoperations:
@@ -55,11 +53,20 @@ class Cardoperations:
                     if parts[0] == 'Maestro':
                         masked = parts[1][:4] + ' ' + parts[1][4:6] + '** **** ' + parts[1][-4:]
                         i[k] = parts[0] + ' ' + masked
-                    if parts[0] in ['Visa']:
+                    if parts[0] == 'МИР':
+                        masked = parts[1][:4] + ' ' + parts[1][4:6] + '** **** ' + parts[1][-4:]
+                        i[k] = parts[0] + ' ' + masked
+                    if parts[0] == 'Visa':
                         masked = parts[2][:4] + ' ' + parts[2][4:6] + '** **** ' + parts[2][-4:]
-                        i[k] = parts[0] + parts[1] + ' ' + masked
+                        i[k] = parts[0] + ' ' + parts[1] + ' ' + masked
+                    if parts[0] == 'MasterCard':
+                        masked = parts[1][:4] + ' ' + parts[1][4:6] + '** **** ' + parts[1][-4:]
+                        i[k] = parts[0] + ' ' + masked
                     if parts[0] == 'Счет':
-                        i[k] = '**' + parts[1][-4:]
+                        masked = ' **' + parts[1][-4:]
+                        i[k] = parts[0] + masked
+                else:
+                    None
         return self.operation
 
     def count_format(self):
@@ -70,9 +77,22 @@ class Cardoperations:
             for k, v in i.items():
                 if k == 'to':
                     parts = v.split(' ')
-                    i[k] = '**' + parts[1][-4:]
+                    if parts[0] == 'Счет':
+                        masked = ' **' + parts[1][-4:]
+                        i[k] = parts[0] + masked
+                    if parts[0] == 'Visa':
+                        masked = parts[2][:4] + ' ' + parts[2][4:6] + '** **** ' + parts[2][-4:]
+                        i[k] = parts[0] + ' ' + parts[1] + ' ' + masked
+                    if parts[0] == 'МИР':
+                        masked = parts[1][:4] + ' ' + parts[1][4:6] + '** **** ' + parts[1][-4:]
+                        i[k] = parts[0] + ' ' + masked
+                    if parts[0] == 'Maestro':
+                        masked = parts[1][:4] + ' ' + parts[1][4:6] + '** **** ' + parts[1][-4:]
+                        i[k] = parts[0] + ' ' + parts[1] + ' ' + masked
+                    if parts[0] == 'MasterCard':
+                        masked = parts[1][:4] + ' ' + parts[1][4:6] + '** **** ' + parts[1][-4:]
+                        i[k] = parts[0] + ' ' + parts[1] + ' ' + masked
+                else:
+                    None
         return self.operation
-
-
-
 

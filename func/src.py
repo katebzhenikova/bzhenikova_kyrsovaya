@@ -1,5 +1,10 @@
-from utils import *  # импортируем функции из файла
+import json
+from func.utils import *  # импортируем функции из файла
+from func import *
 
+
+info_file = load_file('operations.json')
+sorted_data = executed_sorted_file(info_file)
 cardoperations = Cardoperations(sorted_data)
 cardoperations.operation_count()
 cardoperations.date_format()
